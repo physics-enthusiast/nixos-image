@@ -30,6 +30,7 @@ jobs:
         run: |
           echo "tag_name=nixos-image${{ ( ( github.event_name == 'workflow_dispatch' || github.event_name == 'push' ) && '-test' ) || '' }}" >> $GITHUB_OUTPUT
           echo "release_name=Prebuilt images" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@v4 
       - uses: mukunku/tag-exists-action@v1.5.0
         id: check-tag
         with:
@@ -52,7 +53,7 @@ jobs:
     permissions: write-all
     steps:
       - name: git checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
       - uses: DeterminateSystems/magic-nix-cache-action@main
