@@ -1,4 +1,4 @@
-{ lib, config, pkgs, modulesPath, ...}: {
+{ lib, config, pkgs, modulesPath, ... }: {
       nixpkgs.hostPlatform = "x86_64-linux";
       imports = [
         "${modulesPath}/nixos/modules/profiles/qemu-guest.nix"
