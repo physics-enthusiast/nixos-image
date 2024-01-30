@@ -30,9 +30,18 @@ jobs:
         run: |
           echo "tag_name=nixos-image${{ ( ( github.event_name == 'workflow_dispatch' || github.event_name == 'push' ) && '-test' ) || '' }}" >> $GITHUB_OUTPUT
           echo "release_name=Prebuilt images" >> $GITHUB_OUTPUT
-      - uses: actions/checkout@v4 
+      - uses: actions/checkout@v4
+      - name: Check for existing tag
+        id: check-tag
+        run: |
+          if gh release view "${{ steps.generate_env_vars.outputs.tag_name }}" -R ${{ github.repository }}; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
       - name: Clear previous release
         run: gh release delete ${{ steps.generate_env_vars.outputs.tag_name }} --yes --cleanup-tag
+        if: ${{ steps.check-tag.outputs.exists == 'true' }}
       - name: Create new release
         run: |
           gh release create ${{ steps.generate_env_vars.outputs.tag_name }} --title "${{ steps.generate_env_vars.outputs.release_name }}"
