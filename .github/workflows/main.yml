@@ -70,4 +70,6 @@ jobs:
       - run: |
           nix run github:nix-community/nixos-generators -- -f ${{ matrix.format}} -c ./configuration.nix -o $PWD/result
       - run: |
-          gh release upload ${{ needs.release.outputs.tag_name }} $(readlink -f ./result)/nixos.${{ matrix.ext }} --repo ${{ github.repository }}
+          dirname=$(readlink -f ./result)
+          filename=$(ls $dirname -b *.${{ matrix.ext }} | head -n1)
+          gh release upload ${{ needs.release.outputs.tag_name }} $dirname/$filename --repo ${{ github.repository }}
