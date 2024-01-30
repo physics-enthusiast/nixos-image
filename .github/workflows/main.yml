@@ -46,9 +46,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: QEMU 
-            format: qcow
-    name: ${{ matrix.name }}
+          - format: qcow
+    name: Format "${{ matrix.format }}"
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
@@ -58,7 +57,7 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@main
       - uses: DeterminateSystems/magic-nix-cache-action@main
       - run: |
-          nix run github:nix-community/nixos-generators -- -f ${{ matrix.format}} -c ./configuration.nix
+          nix run github:nix-community/nixos-generators -- -f ${{ matrix.format}} -c ./configuration.nix -o $PWD
       - run: |
           ls
           gh release upload ${{ needs.release.outputs.tag_name }} $(readlink -f ./result) --repo ${{ github.repository }}
