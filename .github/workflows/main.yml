@@ -1,0 +1,60 @@
+name: Build NixOS VM images
+
+concurrency: 
+  group: ${{ ( ( github.event_name == 'workflow_dispatch' || github.event_name == 'push' ) && 'manual' ) || 'automated' }}
+  cancel-in-progress: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }} 
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    permissions: write-all
+    outputs:
+      timestamp: ${{ steps.get-timestamp.outputs.time }}
+      tag_name: ${{ steps.generate_env_vars.outputs.tag_name }}
+    steps:
+      - name: Get build timestamp
+        id: get-timestamp
+        run: |
+          echo "time=$(/bin/date -u "+%Y-%m-%d-%H%M")" >> $GITHUB_OUTPUT
+      - name: Generate environmental variables
+        id: generate_env_vars
+        run: |
+          echo "tag_name=nixos-image${{ ( ( github.event_name == 'workflow_dispatch' || github.event_name == 'push' ) && '-test' ) || '' }}" >> $GITHUB_OUTPUT
+          echo "release_name=Prebuilt images" >> $GITHUB_OUTPUT
+      - uses: mukunku/tag-exists-action@v1.5.0
+        id: check-tag
+        with:
+            tag: ${{ steps.generate_env_vars.outputs.tag_name }}
+      - run: gh release delete ${{ steps.generate_env_vars.outputs.tag_name }} --yes --cleanup-tag
+        if: ${{ steps.check-tag.outputs.exists == 'true' }}
+      - run: |
+          gh release create ${{ steps.generate_env_vars.outputs.tag_name }} --generate-notes --prerelease --title "${{ steps.generate_env_vars.outputs.release_name }}"
+
+  builds:
+    needs: release
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: QEMU 
+            format: qcow
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: git checkout
+        uses: actions/checkout@v3
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - run: |
+          nix run github:nix-community/nixos-generators -- -f ${{ matrix.name }} -c ./configuration.nix
