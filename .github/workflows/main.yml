@@ -43,8 +43,14 @@ jobs:
         run: gh release delete ${{ steps.generate_env_vars.outputs.tag_name }} --yes --cleanup-tag
         if: ${{ steps.check-tag.outputs.exists == 'true' }}
       - name: Create new release
-        run: |
-          gh release create ${{ steps.generate_env_vars.outputs.tag_name }} --title "${{ steps.generate_env_vars.outputs.release_name }}"
+        uses: ncipollo/release-action@v1
+        with:
+          commit: ${{ github.sha }}
+          draft: false
+          makeLatest: false
+          name: ${{ steps.generate_env_vars.outputs.release_name }}
+          omitBody: true
+          tag: ${{ steps.generate_env_vars.outputs.tag_name }}
 
   builds:
     needs: release
