@@ -70,8 +70,8 @@ jobs:
       - run: |
           nix run github:nix-community/nixos-generators -- -f ${{ matrix.format}} -c ./configuration.nix -o $PWD/result
       - run: |
-          dirname=$(readlink -f ./result)
-          echo $dirname
-          filename=$(ls $dirname -b *.${{ matrix.ext }} | head -n1)
-          echo $filename
-          gh release upload ${{ needs.release.outputs.tag_name }} $dirname/$filename --repo ${{ github.repository }}
+          dirpath=$(readlink -f ./result)
+          echo $dirpath
+          filename=$(find "$dirpath" -type f -name "*.${{ matrix.ext }}" | head -n1)
+          echo $filepath
+          gh release upload ${{ needs.release.outputs.tag_name }} $filepath --repo ${{ github.repository }}
