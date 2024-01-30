@@ -22,6 +22,7 @@
       networking = {
         defaultGateway = { address = "10.1.1.1"; interface = "eth0"; };
         dhcpcd.enable = false;
+        useNetworkd= true;
         interfaces.eth0.useDHCP = false;
       };
 
