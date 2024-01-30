@@ -24,12 +24,12 @@ jobs:
       - name: Get build timestamp
         id: get-timestamp
         run: |
-          echo "time=$(/bin/date -u "+%Y-%m-%d-%H%M")" >> $GITHUB_OUTPUT
+          echo "time=$(/bin/date -u "+%Y-%m-%d")" >> $GITHUB_OUTPUT
       - name: Generate environmental variables
         id: generate_env_vars
         run: |
-          echo "tag_name=nixos-image${{ ( ( github.event_name == 'workflow_dispatch' || github.event_name == 'push' ) && '-test' ) || '' }}" >> $GITHUB_OUTPUT
-          echo "release_name=Prebuilt images" >> $GITHUB_OUTPUT
+          echo "tag_name=nixos-image-${{ ( ( github.event_name == 'workflow_dispatch' || github.event_name == 'push' ) && 'test' ) || steps.get-timestamp.outputs.time }}" >> $GITHUB_OUTPUT
+          echo "release_name=${{ ( ( github.event_name == 'workflow_dispatch' || github.event_name == 'push' ) && join([ 'Test Build', steps.get-timestamp.outputs.time ]) ) || join([ 'Build', steps.get-timestamp.outputs.time ]) }}"" >> $GITHUB_OUTPUT
       - uses: actions/checkout@v4
       - name: Check for existing tag
         id: check-tag
