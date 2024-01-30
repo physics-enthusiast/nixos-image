@@ -72,7 +72,6 @@ jobs:
       - run: |
           dirpath=$(readlink -f ./result)
           echo $dirpath
-          echo "$(find "$dirpath" -type f -name "*.${{ matrix.ext }}")"
-          filename=$(find "$dirpath" -type f -name "*.${{ matrix.ext }}" | head -n 1)
+          filename=$(find "$dirpath" -type f -name "*.${{ matrix.ext }}")
           echo $filepath
           gh release upload ${{ needs.release.outputs.tag_name }} $filepath --repo ${{ github.repository }}
