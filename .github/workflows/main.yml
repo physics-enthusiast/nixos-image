@@ -47,7 +47,8 @@ jobs:
       matrix:
         include:
           - format: qcow
-    name: Format "${{ matrix.format }}"
+          - ext: qcow2
+    name: nixos.${{ matrix.ext }}
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
@@ -60,4 +61,4 @@ jobs:
           nix run github:nix-community/nixos-generators -- -f ${{ matrix.format}} -c ./configuration.nix -o $PWD/result
       - run: |
           ls
-          gh release upload ${{ needs.release.outputs.tag_name }} $(readlink -f ./result) --repo ${{ github.repository }}
+          gh release upload ${{ needs.release.outputs.tag_name }} $(readlink -f ./result)/nixos.${{ matrix.ext }} --repo ${{ github.repository }}
