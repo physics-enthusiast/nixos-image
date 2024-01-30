@@ -47,7 +47,7 @@ jobs:
       matrix:
         include:
           - format: qcow
-          - ext: qcow2
+            ext: qcow2
     name: nixos.${{ matrix.ext }}
     runs-on: ubuntu-latest
     permissions: write-all
