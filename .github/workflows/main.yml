@@ -38,7 +38,7 @@ jobs:
       - run: gh release delete ${{ steps.generate_env_vars.outputs.tag_name }} --yes --cleanup-tag
         if: ${{ steps.check-tag.outputs.exists == 'true' }}
       - run: |
-          gh release create ${{ steps.generate_env_vars.outputs.tag_name }} --prerelease --title "${{ steps.generate_env_vars.outputs.release_name }}"
+          gh release create ${{ steps.generate_env_vars.outputs.tag_name }} --title "${{ steps.generate_env_vars.outputs.release_name }}"
 
   builds:
     needs: release
@@ -60,5 +60,4 @@ jobs:
       - run: |
           nix run github:nix-community/nixos-generators -- -f ${{ matrix.format}} -c ./configuration.nix -o $PWD/result
       - run: |
-          ls
           gh release upload ${{ needs.release.outputs.tag_name }} $(readlink -f ./result)/nixos.${{ matrix.ext }} --repo ${{ github.repository }}
