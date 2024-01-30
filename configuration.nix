@@ -8,13 +8,6 @@
         hostName = "nixos-cloudinit";
       };
 
-      fileSystems."/" = lib.mkDefault {
-        label = "nixos";
-        fsType = "ext4";
-        autoResize = true;
-      };
-      boot.loader.grub.device = lib.mkDefault "/dev/sda";
-
       services.openssh.enable = true;
 
       services.qemuGuest.enable = true;
