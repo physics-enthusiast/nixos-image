@@ -66,9 +66,10 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@main
       - name: Build
         run: |
-          nix run github:nix-community/nixos-generators -- -f ${{ matrix.format}} -c ./configuration.nix -o $PWD/result
+          nix run github:nix-community/nixos-generators -- -f ${{ matrix.format}} -c ./configuration.nix -o $PWD/result -I nixpkgs=channel:nixos-unstable
       - name: Upload
         run: |
           dirpath=$(readlink -f ./result)
           filepath=$(find "$dirpath" -type f -name "*.${{ matrix.ext }}" | head -n 1)
-          gh release upload ${{ needs.release.outputs.tag_name }} $filepath --repo ${{ github.repository }}
+          cp $filepath nixos.${{ matrix.ext }}
+          gh release upload ${{ needs.release.outputs.tag_name }} nixos.${{ matrix.ext }} --repo ${{ github.repository }}
