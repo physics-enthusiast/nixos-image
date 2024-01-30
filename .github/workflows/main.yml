@@ -39,9 +39,11 @@ jobs:
           else
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
-      - run: gh release delete ${{ steps.generate_env_vars.outputs.tag_name }} --yes --cleanup-tag
+      - name: Clear previous release
+        run: gh release delete ${{ steps.generate_env_vars.outputs.tag_name }} --yes --cleanup-tag
         if: ${{ steps.check-tag.outputs.exists == 'true' }}
-      - run: |
+      - name: Create new release
+        run: |
           gh release create ${{ steps.generate_env_vars.outputs.tag_name }} --title "${{ steps.generate_env_vars.outputs.release_name }}"
 
   builds:
