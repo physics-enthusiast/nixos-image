@@ -1,7 +1,7 @@
-{ lib, config, pkgs, ...}: {
+{ lib, config, pkgs, modulesPath, ...}: {
       nixpkgs.hostPlatform = "x86_64-linux";
       imports = [
-        "${nixpkgs}/nixos/modules/profiles/qemu-guest.nix"
+        "${modulesPath}/nixos/modules/profiles/qemu-guest.nix"
       ];
 
       networking = {
