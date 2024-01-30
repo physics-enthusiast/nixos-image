@@ -52,8 +52,6 @@ jobs:
             ext: iso
           - format: qcow
             ext: qcow2
-          - format: raw-efi
-            ext: img
           - format: virtualbox
             ext: ova
           - format: vmware
