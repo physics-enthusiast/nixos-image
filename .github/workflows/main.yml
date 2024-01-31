@@ -40,7 +40,7 @@ jobs:
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
       - name: Clear previous release
-        run: gh release delete ${{ steps.generate_env_vars.outputs.tag_name }} --yes --cleanup-tag
+        run: gh release delete ${{ steps.generate_env_vars.outputs.tag_name }} --yes --cleanup-tag -R ${{ github.repository }}
         if: ${{ steps.check-tag.outputs.exists == 'true' }}
       - name: Create new release
         uses: ncipollo/release-action@v1
