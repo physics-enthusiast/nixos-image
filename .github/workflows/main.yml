@@ -91,7 +91,7 @@ jobs:
           gh release upload ${{ needs.release.outputs.tag_name }} nixos.${{ matrix.ext }} --repo ${{ github.repository }}
           
   publish:
-    needs: builds
+    needs: [release, builds]
     name: Publish
     runs-on: ubuntu-latest
     permissions: write-all
