@@ -5,7 +5,7 @@
       ];
 
       networking = {
-        hostName = "nixos-cloudinit";
+        hostName = "nixos";
       };
 
       services.openssh.enable = true;
@@ -14,46 +14,17 @@
 
       security.sudo.wheelNeedsPassword = false;
 
-      users.users.ops = {
+      users.users.nixos = {
         isNormalUser = true;
         extraGroups = [ "wheel" ];
       };
 
-      networking = {
-        defaultGateway = { address = "10.1.1.1"; interface = "eth0"; };
-        dhcpcd.enable = false;
-        useNetworkd= true;
-        interfaces.eth0.useDHCP = false;
-      };
+      networking.useNetworkd= true;
 
       systemd.network.enable = true;
 
       services.cloud-init = {
         enable = true;
         network.enable = true;
-        config = ''
-          system_info:
-            distro: nixos
-            network:
-              renderers: [ 'networkd' ]
-            default_user:
-              name: ops
-          users:
-              - default
-          ssh_pwauth: false
-          chpasswd:
-            expire: false
-          cloud_init_modules:
-            - migrator
-            - seed_random
-            - growpart
-            - resizefs
-          cloud_config_modules:
-            - disk_setup
-            - mounts
-            - set-passwords
-            - ssh
-          cloud_final_modules: []
-          '';
       };
 }
