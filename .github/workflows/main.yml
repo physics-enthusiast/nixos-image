@@ -57,6 +57,7 @@ jobs:
 
   builds:
     needs: release
+    name: Build Images
     strategy:
       fail-fast: false
       matrix:
@@ -90,8 +91,9 @@ jobs:
           chmod 666 nixos.${{ matrix.ext }}
           gh release upload ${{ needs.release.outputs.tag_name }} nixos.${{ matrix.ext }} --repo ${{ github.repository }}
           
-  set:
+  publish:
     needs: builds
+    name: Publish
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
