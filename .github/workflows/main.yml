@@ -5,6 +5,8 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }} 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 12 * * *" 
   push:
     branches:
       - main
@@ -43,11 +45,12 @@ jobs:
         run: gh release delete ${{ steps.generate_env_vars.outputs.tag_name }} --yes --cleanup-tag -R ${{ github.repository }}
         if: ${{ steps.check-tag.outputs.exists == 'true' }}
       - name: Create new release
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@v1.13.0
         with:
           commit: ${{ github.sha }}
           draft: false
           makeLatest: false
+          prerelease: true
           name: ${{ steps.generate_env_vars.outputs.release_name }}
           omitBody: true
           tag: ${{ steps.generate_env_vars.outputs.tag_name }}
@@ -86,3 +89,13 @@ jobs:
           cp $filepath nixos.${{ matrix.ext }}
           chmod 666 nixos.${{ matrix.ext }}
           gh release upload ${{ needs.release.outputs.tag_name }} nixos.${{ matrix.ext }} --repo ${{ github.repository }}
+          
+  set:
+    needs: builds
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+    - name: Set as latest
+      if: ${{ github.event_name == 'scheduled' }}
+      run: |
+        gh release edit ${{ needs.release.outputs.tag_name }} --prerelease=false --latest=true --repo ${{ github.repository }}
