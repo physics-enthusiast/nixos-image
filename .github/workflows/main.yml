@@ -67,8 +67,6 @@ jobs:
             ext: iso
           - format: qcow
             ext: qcow2
-          - format: virtualbox
-            ext: ova
           - format: vmware
             ext: vmdk
     name: nixos.${{ matrix.ext }}
