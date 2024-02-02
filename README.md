@@ -4,3 +4,6 @@ This repo builds NixOS disk images of various formats using Github Actions. They
 
 ## Caveats
 - Currently, cloud-init runs, but its capabilities are [limited](https://search.nixos.org/options?channel=23.11&show=services.cloud-init.enable&from=0&size=50&sort=relevance&type=packages&query=cloud-init) by its conflicts with the declarative nature of NixOS. This means that some modules may behave differently compared to the imperative distros. For instance, it appears to be incapable of setting ssh_authorized_keys for any user that is not root, and silently places them in root instead.
+
+## Acknowledgements
+The configuration built is based on a modified version of voidus' [nixos cloud-init base image](https://discourse.nixos.org/t/a-cloudinit-image-for-use-in-proxmox/27519).
