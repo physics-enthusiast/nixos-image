@@ -45,16 +45,8 @@ jobs:
         run: gh release delete ${{ steps.generate_env_vars.outputs.tag_name }} --yes --cleanup-tag -R ${{ github.repository }}
         if: ${{ steps.check-tag.outputs.exists == 'true' }}
       - name: Create new release
-        uses: ncipollo/release-action@v1.13.0
-        with:
-          commit: ${{ github.sha }}
-          draft: false
-          makeLatest: false
-          prerelease: true
-          name: ${{ steps.generate_env_vars.outputs.release_name }}
-          omitBody: true
-          tag: ${{ steps.generate_env_vars.outputs.tag_name }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create ${{ steps.generate_env_vars.outputs.tag_name }} --title "${{ steps.generate_env_vars.outputs.release_name }}" --generate-notes=false --draft=false --latest=false --prerelease=true
 
   builds:
     needs: release
