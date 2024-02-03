@@ -72,8 +72,10 @@ jobs:
         uses: actions/checkout@v4
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
-      - name: Collect Workflow Telemetry
-        uses: catchpoint/workflow-telemetry-action@v1
+      - name: Set Swap Space
+        uses: pierotofy/set-swap-space@master
+        with:
+          swap-size-gb: 32
       - name: Build
         run: |
           nix run github:nix-community/nixos-generators -- -f ${{ matrix.format}} -c ./configuration.nix -o $PWD/result -I nixpkgs=channel:nixos-unstable
