@@ -95,6 +95,6 @@ jobs:
     permissions: write-all
     steps:
     - name: Set as latest
-      if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'scheduled' }}
+      if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' }}
       run: |
         gh release edit ${{ needs.release.outputs.tag_name }} --prerelease=false --latest=true --repo ${{ github.repository }}
