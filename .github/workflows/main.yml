@@ -54,6 +54,7 @@ jobs:
           name: ${{ steps.generate_env_vars.outputs.release_name }}
           omitBody: true
           tag: ${{ steps.generate_env_vars.outputs.tag_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   builds:
     needs: release
