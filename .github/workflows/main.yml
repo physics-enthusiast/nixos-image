@@ -60,6 +60,8 @@ jobs:
             ext: iso
           - format: qcow
             ext: qcow2
+          - format: virtualbox
+            ext: ova
           - format: vmware
             ext: vmdk
     name: nixos.${{ matrix.ext }}
@@ -70,6 +72,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
+      - name: Collect Workflow Telemetry
+        uses: catchpoint/workflow-telemetry-action@v1
       - name: Build
         run: |
           nix run github:nix-community/nixos-generators -- -f ${{ matrix.format}} -c ./configuration.nix -o $PWD/result -I nixpkgs=channel:nixos-unstable
