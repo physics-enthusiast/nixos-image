@@ -76,7 +76,7 @@ jobs:
           swap-size-gb: 32
       - name: Build
         run: |
-          nix build .#nixosConfigurations.nixos.config.formats.${{ matrix.format }} -o $PWD/result
+          nix run github:nix-community/nixos-generators -- -f ${{ matrix.format}} -c ./configuration.nix -o $PWD/result -I nixpkgs=channel:nixos-unstable
       - name: Upload
         run: |
           dirpath=$(readlink -f ./result)
