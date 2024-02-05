@@ -81,7 +81,7 @@ jobs:
         run: |
           dirpath=$(readlink -f ./result)
           filepath=$(find "$dirpath" -type f -name "*.${{ matrix.ext }}" | head -n 1)
-          cp $filepath nixos.${{ matrix.ext }}
+          cp $filepath nixos-${{ matrix.format }}.${{ matrix.ext }}
           chmod 755 nixos-${{ matrix.format }}.${{ matrix.ext }}
           gh release upload ${{ needs.release.outputs.tag_name }} nixos-${{ matrix.format }}.${{ matrix.ext }} --repo ${{ github.repository }}
           
