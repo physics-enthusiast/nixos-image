@@ -55,9 +55,6 @@ jobs:
           - name: EC2
             format: amazon
             ext: vhd
-          - name: Azure
-            format: azure
-            ext: vhd
           - name: Digital Ocean
             format: do
             ext: qcow2.gz
