@@ -10,6 +10,7 @@
     nixosModules.customFormats = {config, ...}: {
       formatConfigs.docker = {config, ...}: {
         services.resolved.enable = false;
+        services.qemuGuest.enable = false;
       };
 
       formatConfigs.oracle = {config, modulesPath, ...}: {
