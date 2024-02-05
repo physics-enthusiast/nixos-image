@@ -18,7 +18,7 @@
           "${toString modulesPath}/virtualisation/oci-image.nix"
         ];
 
-        formatAttr = "oracleCloudImage";
+        formatAttr = "OCIImage";
         fileExtension = ".qcow2";
       };
     };
