@@ -62,7 +62,7 @@ jobs:
             ext: ova
           - format: vmware
             ext: vmdk
-    name: nixos.${{ matrix.ext }}
+    name: nixos-${{ matrix.format }}.${{ matrix.ext }}
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
@@ -81,9 +81,9 @@ jobs:
         run: |
           dirpath=$(readlink -f ./result)
           filepath=$(find "$dirpath" -type f -name "*.${{ matrix.ext }}" | head -n 1)
-          cp $filepath nixos.${{ matrix.ext }}
-          chmod 755 nixos.${{ matrix.ext }}
-          gh release upload ${{ needs.release.outputs.tag_name }} nixos.${{ matrix.ext }} --repo ${{ github.repository }}
+          cp $filepath nixos-${{ matrix.format }}.${{ matrix.ext }}
+          chmod 755 nixos-${{ matrix.format }}.${{ matrix.ext }}
+          gh release upload ${{ needs.release.outputs.tag_name }} nixos-${{ matrix.format }}.${{ matrix.ext }} --repo ${{ github.repository }}
           
   publish:
     needs: [release, builds]
