@@ -7,10 +7,10 @@
     };
   };
   outputs = { self, nixpkgs, nixos-generators, ... }: {
-    nixosModules.customFormats = {config, ...}: {
-      formatConfigs.docker = {config, ...}: {
+    nixosModules.customFormats = {config, lib, ...}: {
+      formatConfigs.docker = {config, lib, ...}: {
         services.resolved.enable = false;
-        services.qemuGuest.enable = false;
+        services.qemuGuest.enable = lib.mkForce false;
       };
 
       formatConfigs.oracle = {config, modulesPath, ...}: {
