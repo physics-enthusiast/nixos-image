@@ -52,17 +52,43 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - format: hyperv
+          - name: EC2
+            format: amazon
+            ext: vhd
+          - name: Digital Ocean
+            format: do
+            ext: qcow2.gz
+          - name: Docker
+            format: docker
+            ext: tar.xz
+          - name: GCE
+            format: gce
+            ext: raw.tar.gz
+          - name: HyperV
+            format: hyperv
             ext: vhdx
-          - format: iso
+          - name: ISO
+            format: iso
             ext: iso
-          - format: qcow
+          - name: KubeVirt
+            format: kubevirt
             ext: qcow2
-          - format: virtualbox
+          - name: Linode
+            format: linode
+            ext: img.gz
+          - name: Oracle Cloud
+            format: oracle
+            ext: qcow2
+          - name: QEMU
+            format: qcow
+            ext: qcow2
+          - name: Virtualbox
+            format: virtualbox
             ext: ova
-          - format: vmware
+          - name: VMWare
+            format: vmware
             ext: vmdk
-    name: nixos-${{ matrix.format }}.${{ matrix.ext }}
+    name: ${{ matrix.name }} Image
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
@@ -76,7 +102,7 @@ jobs:
           swap-size-gb: 32
       - name: Build
         run: |
-          nix run github:nix-community/nixos-generators -- -f ${{ matrix.format}} -c ./configuration.nix -o $PWD/result -I nixpkgs=channel:nixos-unstable
+          nix build .#nixosConfigurations.nixos.config.formats.${{ matrix.format }} -o $PWD/result
       - name: Upload
         run: |
           dirpath=$(readlink -f ./result)

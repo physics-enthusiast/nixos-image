@@ -4,6 +4,8 @@
         "${modulesPath}/profiles/qemu-guest.nix"
       ];
 
+      nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
       networking = {
         hostName = "nixos";
       };
