@@ -70,6 +70,15 @@ jobs:
           - name: ISO
             format: iso
             ext: iso
+          - name: KubeVirt
+            format: kubevirt
+            ext: qcow2
+          - name: Linode
+            format: linode
+            ext: img.gz
+          - name: Oracle Cloud
+            format: oracle
+            ext: qcow2
           - name: QEMU
             format: qcow
             ext: qcow2
