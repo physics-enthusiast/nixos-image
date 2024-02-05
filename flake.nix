@@ -8,7 +8,10 @@
   };
   outputs = { self, nixpkgs, nixos-generators, ... }: {
     nixosModules.customFormats = {config, ...}: {
-      # define a new format
+      formatConfigs.docker = {config, ...}: {
+        services.resolved.enable = false;
+      };
+
       formatConfigs.oracle = {config, modulesPath, ...}: {
         imports = [
           "${toString modulesPath}/virtualisation/oci-image.nix"
