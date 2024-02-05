@@ -52,17 +52,37 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - format: hyperv
+          - name: EC2
+            format: amazon
+            ext: vhd
+          - name: Azure
+            format: azure
+            ext: vhd
+          - name: Digital Ocean
+            format: do
+            ext: qcow2.gz
+          - name: Docker
+            format: docker
+            ext: tar.xz
+          - name: GCE
+            format: gce
+            ext: raw.tar.gz
+          - name: HyperV
+            format: hyperv
             ext: vhdx
-          - format: iso
+          - name: ISO
+            format: iso
             ext: iso
-          - format: qcow
+          - name: QEMU
+            format: qcow
             ext: qcow2
-          - format: virtualbox
+          - name: Virtualbox
+            format: virtualbox
             ext: ova
-          - format: vmware
+          - name: VMWare
+            format: vmware
             ext: vmdk
-    name: nixos-${{ matrix.format }}.${{ matrix.ext }}
+    name: ${{ matrix.name }} Image
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
