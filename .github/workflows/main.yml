@@ -55,6 +55,9 @@ jobs:
           - name: EC2
             format: amazon
             ext: vhd
+          - name: Azure
+            format: azure
+            ext: vhd
           - name: Digital Ocean
             format: do
             ext: qcow2.gz
@@ -79,9 +82,24 @@ jobs:
           - name: Oracle Cloud
             format: oracle
             ext: qcow2
+          - name: Proxmox
+            format: proxmox
+            ext: vma.zst
+          - name: Proxmox LXC
+            format: proxmox-lxc
+            ext: tar.xz
           - name: QEMU
             format: qcow
             ext: qcow2
+          - name: Raw BIOS Bootable
+            format: raw
+            ext: img
+          - name: Raw EFI Bootable
+            format: raw-efi
+            ext: img
+          - name: Vagrant
+            format: virtualbox-vagrant
+            ext: box
           - name: Virtualbox
             format: virtualbox
             ext: ova
