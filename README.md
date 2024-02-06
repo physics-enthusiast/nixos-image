@@ -8,7 +8,7 @@ format | description
 --- | ---
 oracle | Oracle Cloud Infrastructure image
 
-The name of the image itself is variable (partly in order to supoort VMMs that require their images to be named a [certain way](https://forum.proxmox.com/threads/error-couldnt-determine-format-and-compression-type.70084/post-324541)), but it is guarenteed to be the only file in the archive. If the image itself must be of known name, the archive can be extracted to an empty directory and renamed [like so](https://stackoverflow.com/a/70166130).
+The name of the image itself is variable (partly in order to supoort VMMs that require their images to be named a [certain way](https://forum.proxmox.com/threads/error-couldnt-determine-format-and-compression-type.70084/post-324541)), but it is guaranteed to be the only file in the archive. If the image must also be of known name, the archive can be extracted to an empty directory and renamed [like so](https://stackoverflow.com/a/70166130).
 
 ## Caveats
 - Currently, cloud-init runs, but its capabilities are [limited](https://search.nixos.org/options?channel=23.11&show=services.cloud-init.enable&from=0&size=50&sort=relevance&type=packages&query=cloud-init) by its conflicts with the declarative nature of NixOS. This means that some modules may behave differently compared to the imperative distros. In particular, it seems that setting authorized_keys for non-root users doesn't work.
