@@ -98,7 +98,7 @@ jobs:
             format: raw-efi
             ext: img
           - name: Vagrant
-            format: virtualbox-vagrant
+            format: vagrant-virtualbox
             ext: box
           - name: Virtualbox
             format: virtualbox
