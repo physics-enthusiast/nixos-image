@@ -124,7 +124,7 @@ jobs:
       - name: Upload
         run: |
           dirpath=$(readlink -f ./result)
-          cp -a $dirpath/. "${{ runner.tmpdir }}"
+          cp -a $dirpath "${{ runner.tmpdir }}"
           filepath=$(find "${{ runner.tmpdir }}" -type f -name "*.${{ matrix.ext }}" | head -n 1)
           echo $filepath
           chmod 755 $filepath
