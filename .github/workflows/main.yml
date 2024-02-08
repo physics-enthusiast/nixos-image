@@ -123,9 +123,7 @@ jobs:
           nix build .#nixosConfigurations.nixos.config.formats.${{ matrix.format }} -o $PWD/result
       - name: Upload
         run: |
-          dirpath=$(readlink -f ./result)
-          echo $dirpath
-          cp -a $dirpath "${{ runner.temp }}"
+          cp -aL ./result "${{ runner.temp }}"
           ls ${{ runner.temp }}
           filepath=$(find "${{ runner.temp }}" -type f -name "*.${{ matrix.ext }}" | head -n 1)
           echo $filepath
