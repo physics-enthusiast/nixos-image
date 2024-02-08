@@ -121,15 +121,9 @@ jobs:
       - name: Build
         run: |
           cp -LR "$(nix build .#nixosConfigurations.nixos.config.formats.${{ matrix.format }} --print-out-paths)" '${{ runner.temp }}'
-          ls -LR "$(nix build .#nixosConfigurations.nixos.config.formats.${{ matrix.format }} --print-out-paths)"
-          file "$(nix build .#nixosConfigurations.nixos.config.formats.${{ matrix.format }} --print-out-paths)"
-          ls -LR $(readlink -f ./result)
       - name: Upload
         run: |
-          ls -LR ${{ runner.temp }}
-          echo $(find -L "${{ runner.temp }}" -type f -name '*.${{ matrix.ext }}')
           filepath=$(find -L "${{ runner.temp }}" -type f -name '*.${{ matrix.ext }}' | head -n 1)
-          echo $filepath
           chmod 755 $filepath
           7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=256m -ms=on nixos-${{ matrix.format }}.7z $filepath
           chmod 755 nixos-${{ matrix.format }}.7z
