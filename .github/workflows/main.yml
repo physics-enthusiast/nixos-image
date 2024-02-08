@@ -124,6 +124,7 @@ jobs:
       - name: Upload
         run: |
           ls ${{ runner.temp }}
+          echo $(find "${{ runner.temp }}" -type f -name "*.${{ matrix.ext }}"
           filepath=$(find "${{ runner.temp }}" -type f -name "*.${{ matrix.ext }}" | head -n 1)
           echo $filepath
           chmod 755 $filepath
