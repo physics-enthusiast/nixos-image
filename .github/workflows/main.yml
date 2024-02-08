@@ -3,7 +3,7 @@ name: Build NixOS VM images
 concurrency: 
   group: ${{ ( github.event_name == 'push' && 'test' ) || 'release' }}
   cancel-in-progress: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }} 
-on:--verbose
+on:
   workflow_dispatch:
   schedule:
     - cron: "0 4 * * *" 
