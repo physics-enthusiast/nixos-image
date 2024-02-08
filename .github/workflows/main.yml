@@ -120,7 +120,7 @@ jobs:
           swap-size-gb: 32
       - name: Build
         run: |
-          cp -a '$(nix build .#nixosConfigurations.nixos.config.formats.${{ matrix.format }} --print-out-paths)' '${{ runner.temp }}'
+          cp -a "$(nix build .#nixosConfigurations.nixos.config.formats.${{ matrix.format }} --print-out-paths)" '${{ runner.temp }}'
       - name: Upload
         run: |
           ls ${{ runner.temp }}
