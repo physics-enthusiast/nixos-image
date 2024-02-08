@@ -3,7 +3,7 @@ name: Build NixOS VM images
 concurrency: 
   group: ${{ ( github.event_name == 'push' && 'test' ) || 'release' }}
   cancel-in-progress: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }} 
-on:
+on:--verbose
   workflow_dispatch:
   schedule:
     - cron: "0 4 * * *" 
@@ -122,6 +122,7 @@ jobs:
         run: |
           cp -LR "$(nix build .#nixosConfigurations.nixos.config.formats.${{ matrix.format }} --print-out-paths)" '${{ runner.temp }}'
           ls -LR "$(nix build .#nixosConfigurations.nixos.config.formats.${{ matrix.format }} --print-out-paths)"
+          file "$(nix build .#nixosConfigurations.nixos.config.formats.${{ matrix.format }} --print-out-paths)"
           ls -LR $(readlink -f ./result)
       - name: Upload
         run: |
