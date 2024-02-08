@@ -123,7 +123,7 @@ jobs:
           cp -LR "$(nix build .#nixosConfigurations.nixos.config.formats.${{ matrix.format }} --print-out-paths)" '${{ runner.temp }}'
       - name: Upload
         run: |
-          ls ${{ runner.temp }}
+          ls -R ${{ runner.temp }}
           echo $(find -L "${{ runner.temp }}" -type f -name '*.${{ matrix.ext }}')
           filepath=$(find -L "${{ runner.temp }}" -type f -name '*.${{ matrix.ext }}' | head -n 1)
           echo $filepath
