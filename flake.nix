@@ -8,6 +8,10 @@
   };
   outputs = { self, nixpkgs, nixos-generators, ... }: {
     nixosModules.customFormats = {config, lib, ...}: {
+      formatConfigs.azure = {config, lib, ...}: {
+        fileExtension = ".vhd";
+      };
+
       formatConfigs.docker = {config, lib, ...}: {
         services.resolved.enable = false;
         services.qemuGuest.enable = lib.mkForce false;
