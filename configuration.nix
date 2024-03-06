@@ -4,6 +4,9 @@
         "${modulesPath}/profiles/qemu-guest.nix"
       ];
 
+      #https://bugs.launchpad.net/cirros/+bug/1312199
+      boot.kernelParams = [ "no_timer_check" ]
+
       nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
       networking = {
