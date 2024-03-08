@@ -129,8 +129,8 @@ jobs:
           filepath=$(find -L "${{ runner.temp }}" -type f -name '*.${{ matrix.type.ext }}' | head -n 1)
           chmod 755 $filepath
           7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=256m -ms=on nixos-${{ matrix.type.format }}${{ ( matrix.configuration != 'cloud' && format('{{-{0}}}', matrix.configuration) ) || '' }}.7z $filepath
-          chmod 755 nixos-${{ matrix.type.format }}.7z
-          gh release upload ${{ needs.release.outputs.tag_name }} nixos-${{ matrix.type.format }}.7z --repo ${{ github.repository }}
+          chmod 755 nixos-${{ matrix.type.format }}${{ ( matrix.configuration != 'cloud' && format('{{-{0}}}', matrix.configuration) ) || '' }}.7z
+          gh release upload ${{ needs.release.outputs.tag_name }} nixos-${{ matrix.type.format }}${{ ( matrix.configuration != 'cloud' && format('{{-{0}}}', matrix.configuration) ) || '' }}.7z --repo ${{ github.repository }}
           
   publish:
     needs: [release, builds]
