@@ -14,7 +14,6 @@
 
       formatConfigs.docker = {config, lib, ...}: {
         services.resolved.enable = false;
-        services.qemuGuest.enable = lib.mkForce false;
       };
 
       formatConfigs.oracle = {config, modulesPath, ...}: {
@@ -24,6 +23,10 @@
 
         formatAttr = "OCIImage";
         fileExtension = ".qcow2";
+      };
+	  
+      formatConfigs.qcow = {config, lib, ...}: {
+        services.qemuGuest.enable = true;
       };
     };
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
