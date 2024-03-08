@@ -21,5 +21,5 @@
 
       networking.useNetworkd= true;
 
-      systemd.network.enable = true;
+      systemd.network.enable = lib.mkForce true;
 }
