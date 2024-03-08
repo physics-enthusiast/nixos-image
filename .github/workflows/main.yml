@@ -51,7 +51,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
+        configuration:
+          - cloud
+          - nocloud
+        type:
           - name: EC2
             format: amazon
             ext: vhd
@@ -106,7 +109,7 @@ jobs:
           - name: VMWare
             format: vmware
             ext: vmdk
-    name: ${{ matrix.name }} Image
+    name: ${{ matrix.type.name }} Image (${{ matrix.configuration }})
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
@@ -120,14 +123,14 @@ jobs:
           swap-size-gb: 32
       - name: Build
         run: |
-          cp -LR "$(nix build .#nixosConfigurations.nixos.config.formats.${{ matrix.format }} --print-out-paths)" '${{ runner.temp }}'
+          cp -LR "$(nix build ./${{ matrix.configuration }}#nixosConfigurations.nixos.config.formats.${{ matrix.type.format }} --print-out-paths)" '${{ runner.temp }}'
       - name: Upload
         run: |
-          filepath=$(find -L "${{ runner.temp }}" -type f -name '*.${{ matrix.ext }}' | head -n 1)
+          filepath=$(find -L "${{ runner.temp }}" -type f -name '*.${{ matrix.type.ext }}' | head -n 1)
           chmod 755 $filepath
-          7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=256m -ms=on nixos-${{ matrix.format }}.7z $filepath
-          chmod 755 nixos-${{ matrix.format }}.7z
-          gh release upload ${{ needs.release.outputs.tag_name }} nixos-${{ matrix.format }}.7z --repo ${{ github.repository }}
+          7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=256m -ms=on nixos-${{ matrix.type.format }}${{ ( matrix.configuration != 'cloud' && format('-{0}', matrix.configuration) ) || '' }}.7z $filepath
+          chmod 755 nixos-${{ matrix.type.format }}${{ ( matrix.configuration != 'cloud' && format('-{0}', matrix.configuration) ) || '' }}.7z
+          gh release upload ${{ needs.release.outputs.tag_name }} nixos-${{ matrix.type.format }}${{ ( matrix.configuration != 'cloud' && format('-{0}', matrix.configuration) ) || '' }}.7z --repo ${{ github.repository }}
           
   publish:
     needs: [release, builds]

@@ -1,8 +1,5 @@
 { lib, config, pkgs, modulesPath, ... }: {
       nixpkgs.hostPlatform = "x86_64-linux";
-      imports = [
-        "${modulesPath}/profiles/qemu-guest.nix"
-      ];
 
       #https://bugs.launchpad.net/cirros/+bug/1312199
       boot.kernelParams = [ "no_timer_check" ];
@@ -14,8 +11,6 @@
       };
 
       services.openssh.enable = true;
-
-      services.qemuGuest.enable = true;
 
       security.sudo.wheelNeedsPassword = false;
 
