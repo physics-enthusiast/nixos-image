@@ -27,4 +27,8 @@
         enable = true;
         network.enable = true;
       };
+
+      environment.systemPackages = with pkgs; [
+        parted
+      ];
 }
