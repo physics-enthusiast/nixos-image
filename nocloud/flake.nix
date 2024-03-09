@@ -8,8 +8,8 @@
   };
   outputs = { self, nixpkgs, nixos-generators, ... }: {
     nixosModules.customFormats = {config, lib, ...}: {
-      formatConfigs.azure = {config, lib, ...}: {
-        fileExtension = ".vhd";
+      formatConfigs.amazon = {config, lib, ...}: {
+        amazonImage.sizeMB = "auto";
       };
 
       formatConfigs.docker = {config, lib, ...}: {
