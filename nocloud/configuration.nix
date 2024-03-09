@@ -22,4 +22,8 @@
       networking.useNetworkd= true;
 
       systemd.network.enable = lib.mkForce true;
+
+      environment.systemPackages = with pkgs; [
+        parted
+      ];
 }
