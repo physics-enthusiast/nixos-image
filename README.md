@@ -12,6 +12,7 @@ The name of the image itself is variable (partly in order to supoort VMMs that r
 
 ## Caveats
 - Currently, cloud-init runs, but its capabilities are [limited](https://search.nixos.org/options?channel=23.11&show=services.cloud-init.enable&from=0&size=50&sort=relevance&type=packages&query=cloud-init) by its conflicts with the declarative nature of NixOS. This means that some modules may behave differently compared to the imperative distros. In particular, it seems that setting authorized_keys for non-root users doesn't work.
+- All configs are built with the `nixos-unstable` branch of nixpkgs. `nixos-rebuild` cannot downgrade the system back to `nixos-23.11` and before due to [this change](https://github.com/NixOS/nixpkgs/pull/278609#issuecomment-1880310532). Images built from the stabke branch are coming soon.
 
 ## Acknowledgements
 The configuration built is based on a modified version of voidus' [nixos cloud-init base image](https://discourse.nixos.org/t/a-cloudinit-image-for-use-in-proxmox/27519).
