@@ -27,16 +27,16 @@ jobs:
       - name: Get configuration files
         id: get-configs
         run: |
-          echo "configs=$(ls configurations/*.nix | sed -e 's/\.nix$//' | jq -R -s -c 'split("\n")[:-1]') >> $GITHUB_OUTPUT"
+          cd ./configurations
+          echo "configs=$(ls *.nix | sed -e 's/\.nix$//' | jq -R -s -c 'split("\n")[:-1]') >> $GITHUB_OUTPUT"
       - name: Get architectures
         id: get-arches
         run: |
           arches=`cat ./architectures.json`
-          arches="${arches//'%'/'%25'}"
-          arches="${arches//$'\n'/'%0A'}"
-          arches="${arches//$'\r'/'%0D'}"
-          # end of optional handling for multi line json
-          echo "arches=$arches >> $GITHUB_OUTPUT"
+          delimiter="$(openssl rand -hex 8)"
+          echo "arches<<${delimiter}" >> "${GITHUB_OUTPUT}"
+          echo "${arches}" >> "${GITHUB_OUTPUT}"
+          echo "${delimiter}" >> "${GITHUB_OUTPUT}"
       - name: Get build timestamp
         id: get-timestamp
         run: |
