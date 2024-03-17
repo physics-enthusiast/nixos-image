@@ -39,7 +39,9 @@
         nixos-generators.nixosModules.all-formats
         self.nixosModules.customFormats
         nixpkgs.lib.path.append ./configurations "${systemInfo.configuration}.nix"
-        { nixpkgs.crossSystem = "${systemInfo.architecture}-linux"; }
+        ({...}: { 
+          nixpkgs.crossSystem = "${systemInfo.architecture}-linux"; 
+        })
       ];
     })));
   };
