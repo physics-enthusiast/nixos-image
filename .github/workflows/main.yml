@@ -20,7 +20,22 @@ jobs:
     outputs:
       timestamp: ${{ steps.get-timestamp.outputs.time }}
       tag_name: ${{ steps.generate_env_vars.outputs.tag_name }}
+      configs: ${{ steps.get-configs.outputs.configs }}
+      arches: ${{ steps.get-arches.outputs.arches }}
     steps:
+      - name: Get configuration files
+        id: get-configs
+        run: |
+          echo "configs=$(ls configurations/*.nix | sed -e 's/\.nix$//' | jq -R -s -c 'split("\n")[:-1]') >> $GITHUB_OUTPUT"
+      - name: Get architectures
+        id: get-arches
+        run: |
+          arches=`cat ./architectures.json`
+          arches="${arches//'%'/'%25'}"
+          arches="${arches//$'\n'/'%0A'}"
+          arches="${arches//$'\r'/'%0D'}"
+          # end of optional handling for multi line json
+          echo "arches=$arches >> $GITHUB_OUTPUT"
       - name: Get build timestamp
         id: get-timestamp
         run: |
@@ -51,9 +66,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        configuration:
-          - cloud
-          - nocloud
+        configuration: ${{ fromJson(needs.release.outputs.configs) }}
+        architecture: ${{ fromJson(needs.release.outputs.arches) }}
         type:
           - name: EC2
             format: amazon
@@ -123,14 +137,14 @@ jobs:
           swap-size-gb: 32
       - name: Build
         run: |
-          cp -LR "$(nix build ./${{ matrix.configuration }}#nixosConfigurations.nixos.config.formats.${{ matrix.type.format }} --print-out-paths)" '${{ runner.temp }}'
+          cp -LR "$(nix build .#nixosConfigurations.nixos-${{ matrix.configuration }}-${{ matrix.architecture }}.config.formats.${{ matrix.type.format }} --print-out-paths)" '${{ runner.temp }}'
       - name: Upload
         run: |
           filepath=$(find -L "${{ runner.temp }}" -type f -name '*.${{ matrix.type.ext }}' | head -n 1)
           chmod 755 $filepath
-          7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=256m -ms=on nixos-${{ matrix.type.format }}${{ ( matrix.configuration != 'cloud' && format('-{0}', matrix.configuration) ) || '' }}.7z $filepath
-          chmod 755 nixos-${{ matrix.type.format }}${{ ( matrix.configuration != 'cloud' && format('-{0}', matrix.configuration) ) || '' }}.7z
-          gh release upload ${{ needs.release.outputs.tag_name }} nixos-${{ matrix.type.format }}${{ ( matrix.configuration != 'cloud' && format('-{0}', matrix.configuration) ) || '' }}.7z --repo ${{ github.repository }}
+          7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=256m -ms=on nixos-${{ matrix.type.format }}${{ ( matrix.configuration != 'default' && format('-{0}', matrix.configuration) ) || '' }}.7z $filepath
+          chmod 755 nixos-${{ matrix.type.format }}${{ ( matrix.configuration != 'default' && format('-{0}', matrix.configuration) ) || '' }}.7z
+          gh release upload ${{ needs.release.outputs.tag_name }} nixos-${{ matrix.type.format }}${{ ( matrix.configuration != 'default' && format('-{0}', matrix.configuration) ) || '' }}.7z --repo ${{ github.repository }}
           
   publish:
     needs: [release, builds]
