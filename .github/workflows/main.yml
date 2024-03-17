@@ -37,6 +37,8 @@ jobs:
           echo "arches<<${delimiter}" >> "${GITHUB_OUTPUT}"
           echo "${arches}" >> "${GITHUB_OUTPUT}"
           echo "${delimiter}" >> "${GITHUB_OUTPUT}"
+      - run: |
+          echo "${{ steps.get-configs.outputs.configs }} ${{ steps.get-arches.outputs.arches }}"
       - name: Get build timestamp
         id: get-timestamp
         run: |
