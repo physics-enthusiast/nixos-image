@@ -28,7 +28,7 @@ jobs:
         id: get-configs
         run: |
           cd ./configurations
-          echo "configs=$(ls *.nix | sed -e 's/\.nix$//' | jq -R -s -c 'split("\n")[:-1]') >> $GITHUB_OUTPUT"
+          echo "configs=$(ls *.nix | sed -e 's/\.nix$//' | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_OUTPUT"
       - name: Get architectures
         id: get-arches
         run: |
@@ -37,8 +37,6 @@ jobs:
           echo "arches<<${delimiter}" >> "${GITHUB_OUTPUT}"
           echo "${arches}" >> "${GITHUB_OUTPUT}"
           echo "${delimiter}" >> "${GITHUB_OUTPUT}"
-      - run: |
-          echo "${{ steps.get-configs.outputs.configs }} ${{ steps.get-arches.outputs.arches }}"
       - name: Get build timestamp
         id: get-timestamp
         run: |
