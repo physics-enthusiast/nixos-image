@@ -23,6 +23,7 @@ jobs:
       configs: ${{ steps.get-configs.outputs.configs }}
       arches: ${{ steps.get-arches.outputs.arches }}
     steps:
+      - uses: actions/checkout@v4
       - name: Get configuration files
         id: get-configs
         run: |
@@ -45,7 +46,6 @@ jobs:
         run: |
           echo "tag_name=nixos-image-${{ ( github.event_name == 'push' && 'test' ) || steps.get-timestamp.outputs.time }}" >> $GITHUB_OUTPUT
           echo "release_name=${{ ( github.event_name == 'push' && format('Test Build {0}', steps.get-timestamp.outputs.time) ) || format('Build {0}', steps.get-timestamp.outputs.time) }}" >> $GITHUB_OUTPUT
-      - uses: actions/checkout@v4
       - name: Check for existing tag
         id: check-tag
         run: |
