@@ -123,7 +123,7 @@ jobs:
           - name: VMWare
             format: vmware
             ext: vmdk
-    name: ${{ matrix.type.name }} Image (${{ matrix.configuration }})
+    name: ${{ matrix.type.name }} Image (${{ matrix.configuration }}, ${{ matrix.architecture }})
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
