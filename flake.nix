@@ -10,6 +10,9 @@
   architectures = builtins.fromJSON (builtins.readFile ./architectures.json);
   configurations = builtins.map (filename: builtins.replaceStrings [".nix"] [""] filename) (builtins.attrNames (builtins.readDir ./configurations));
   in
+  let
+  trace = builtins.trace "${architectures}-${configurations}" "null";
+  in
   {
     nixosModules.customFormats = {config, lib, ...}: {
       formatConfigs.amazon = {config, lib, ...}: {
