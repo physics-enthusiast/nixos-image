@@ -6,10 +6,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { self, nixpkgs, nixos-generators, ... }: { let
+  outputs = { self, nixpkgs, nixos-generators, ... }: let
   architectures = builtins.fromJSON (builtins.readFile ./architectures.json);
   configurations = builtins.map (filename: builtins.replaceStrings [".nix"] [""] filename) (builtins.attrNames (builtins.readDir ./configurations));
   in
+  {
     nixosModules.customFormats = {config, lib, ...}: {
       formatConfigs.amazon = {config, lib, ...}: {
         amazonImage.sizeMB = "auto";
