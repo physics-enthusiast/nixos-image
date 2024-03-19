@@ -133,7 +133,7 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@main
         with:
           extra-conf: |
-            extra-platforms = ${{ matrix.arch }}-linux
+            extra-platforms = ${{ matrix.architecture }}-linux
       - name: Set Swap Space
         uses: pierotofy/set-swap-space@master
         with:
