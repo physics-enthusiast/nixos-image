@@ -131,6 +131,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            extra-platforms = ${{ matrix.arch }}-linux
       - name: Set Swap Space
         uses: pierotofy/set-swap-space@master
         with:
