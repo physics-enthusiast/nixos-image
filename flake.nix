@@ -16,7 +16,9 @@
     let
       pkgs = import nixpkgs { system = "${architecture}-linux"; };
     in
-      stdenv = pkgs.stdenv
+      {
+        stdenv = pkgs.stdenv;
+      };
     );
     nixosModules.customFormats = {config, lib, ...}: {
       formatConfigs.amazon = {config, lib, ...}: {
