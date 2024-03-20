@@ -16,8 +16,13 @@
     let
       pkgs = import nixpkgs { system = "${architecture}-linux"; };
     in
-    {
+    rec {
       stdenv = pkgs.stdenv;
+      final = stdenv.__bootPackages.stdenv;
+      stage4 = final.__bootPackages.stdenv;
+      stage3 = stage4.__bootPackages.stdenv;
+      stage2 = stage3.__bootPackages.stdenv;
+      stage1 = stage2.__bootPackages.stdenv;
     });
     nixosModules.customFormats = {config, lib, ...}: {
       formatConfigs.amazon = {config, lib, ...}: {
