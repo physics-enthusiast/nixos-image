@@ -1,6 +1,4 @@
 { lib, config, pkgs, modulesPath, ... }: {
-      nixpkgs.hostPlatform = "x86_64-linux";
-
       #https://bugs.launchpad.net/cirros/+bug/1312199
       boot.kernelParams = [ "no_timer_check" ];
 
@@ -21,14 +19,9 @@
 
       networking.useNetworkd= true;
 
-      systemd.network.enable = true;
-
-      services.cloud-init = {
-        enable = true;
-        network.enable = true;
-      };
+      systemd.network.enable = lib.mkForce true;
 
       environment.systemPackages = with pkgs; [
         parted
       ];
-}
+}  

@@ -20,7 +20,23 @@ jobs:
     outputs:
       timestamp: ${{ steps.get-timestamp.outputs.time }}
       tag_name: ${{ steps.generate_env_vars.outputs.tag_name }}
+      configs: ${{ steps.get-configs.outputs.configs }}
+      arches: ${{ steps.get-arches.outputs.arches }}
     steps:
+      - uses: actions/checkout@v4
+      - name: Get configuration files
+        id: get-configs
+        run: |
+          cd ./configurations
+          echo "configs=$(ls *.nix | sed -e 's/\.nix$//' | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_OUTPUT"
+      - name: Get architectures
+        id: get-arches
+        run: |
+          arches=`cat ./architectures.json`
+          delimiter="$(openssl rand -hex 8)"
+          echo "arches<<${delimiter}" >> "${GITHUB_OUTPUT}"
+          echo "${arches}" >> "${GITHUB_OUTPUT}"
+          echo "${delimiter}" >> "${GITHUB_OUTPUT}"
       - name: Get build timestamp
         id: get-timestamp
         run: |
@@ -30,7 +46,6 @@ jobs:
         run: |
           echo "tag_name=nixos-image-${{ ( github.event_name == 'push' && 'test' ) || steps.get-timestamp.outputs.time }}" >> $GITHUB_OUTPUT
           echo "release_name=${{ ( github.event_name == 'push' && format('Test Build {0}', steps.get-timestamp.outputs.time) ) || format('Build {0}', steps.get-timestamp.outputs.time) }}" >> $GITHUB_OUTPUT
-      - uses: actions/checkout@v4
       - name: Check for existing tag
         id: check-tag
         run: |
@@ -51,9 +66,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        configuration:
-          - cloud
-          - nocloud
+        configuration: ${{ fromJson(needs.release.outputs.configs) }}
+        architecture: ${{ fromJson(needs.release.outputs.arches) }}
         type:
           - name: EC2
             format: amazon
@@ -109,28 +123,34 @@ jobs:
           - name: VMWare
             format: vmware
             ext: vmdk
-    name: ${{ matrix.type.name }} Image (${{ matrix.configuration }})
+    name: ${{ matrix.type.name }} Image (${{ matrix.configuration }}, ${{ matrix.architecture }})
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+      - name: Setup Binfmt
+        uses: docker/setup-qemu-action@v3
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            extra-platforms = ${{ matrix.architecture }}-linux
       - name: Set Swap Space
         uses: pierotofy/set-swap-space@master
         with:
           swap-size-gb: 32
       - name: Build
         run: |
-          cp -LR "$(nix build ./${{ matrix.configuration }}#nixosConfigurations.nixos.config.formats.${{ matrix.type.format }} --print-out-paths)" '${{ runner.temp }}'
+          cp -LR "$(nix build .#nixosConfigurations.nixos-${{ matrix.configuration }}-${{ matrix.architecture }}.config.formats.${{ matrix.type.format }} --print-out-paths)" '${{ runner.temp }}'
       - name: Upload
         run: |
           filepath=$(find -L "${{ runner.temp }}" -type f -name '*.${{ matrix.type.ext }}' | head -n 1)
-          chmod 755 $filepath
-          7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=256m -ms=on nixos-${{ matrix.type.format }}${{ ( matrix.configuration != 'cloud' && format('-{0}', matrix.configuration) ) || '' }}.7z $filepath
-          chmod 755 nixos-${{ matrix.type.format }}${{ ( matrix.configuration != 'cloud' && format('-{0}', matrix.configuration) ) || '' }}.7z
-          gh release upload ${{ needs.release.outputs.tag_name }} nixos-${{ matrix.type.format }}${{ ( matrix.configuration != 'cloud' && format('-{0}', matrix.configuration) ) || '' }}.7z --repo ${{ github.repository }}
+          chmod 755 "$filepath" 
+          newpath="nixos-${{ matrix.type.format }}${{ ( matrix.configuration != 'default' && format('-{0}', matrix.configuration) ) || '' }}${{ ( matrix.architecture != 'x86_64' && format('-{0}', matrix.architecture) ) || '' }}.7z"
+          7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=256m -ms=on "$newpath" "$filepath" 
+          chmod 755 "$newpath"
+          gh release upload ${{ needs.release.outputs.tag_name }} "$newpath" --repo ${{ github.repository }}
           
   publish:
     needs: [release, builds]
