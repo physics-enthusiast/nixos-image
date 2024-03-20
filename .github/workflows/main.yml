@@ -87,7 +87,7 @@ jobs:
       - uses: DeterminateSystems/magic-nix-cache-action@main
       - name: Build
         run: |
-          nix build .#packages.${{ matrix.architecture }}.stdenv.__bootPackages.stdenv.____bootPackages.stdenv.__bootPackages.stdenv.__bootPackages.stdenv
+          nix build .#packages.${{ matrix.architecture }}.stdenv.__bootPackages.stdenv.__bootPackages.stdenv.__bootPackages.stdenv.__bootPackages.stdenv
   builds:
     needs: [release, prebuilds] 
     strategy:
