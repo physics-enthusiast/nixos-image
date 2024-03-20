@@ -6,11 +6,18 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { self, nixpkgs, nixos-generators, ... }: let
-  architectures = builtins.fromJSON (builtins.readFile ./architectures.json);
-  configurations = builtins.map (filename: builtins.replaceStrings [".nix"] [""] filename) (builtins.attrNames (builtins.readDir ./configurations));
+  outputs = { self, nixpkgs, nixos-generators, ... }:
+  let
+    architectures = builtins.fromJSON (builtins.readFile ./architectures.json);
+    configurations = builtins.map (filename: builtins.replaceStrings [".nix"] [""] filename) (builtins.attrNames (builtins.readDir ./configurations));
   in
   {
+    packages = nixpkgs.lib.genAttrs architectures (architecture:
+    let
+      pkgs = import nixpkgs { system = "${architecture}-linux"; };
+    in
+      stdenv = pkgs.stdenv
+    );
     nixosModules.customFormats = {config, lib, ...}: {
       formatConfigs.amazon = {config, lib, ...}: {
         amazonImage.sizeMB = "auto";
