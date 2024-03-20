@@ -17,9 +17,9 @@
         extraGroups = [ "wheel" ];
       };
 
-      networking.useNetworkd= true;
+      networking.useNetworkd= lib.mkDefault true;
 
-      systemd.network.enable = true;
+      systemd.network.enable = lib.mkDefault true;
 
       environment.systemPackages = with pkgs; [
         parted
