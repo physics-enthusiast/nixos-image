@@ -1,0 +1,41 @@
+name: Prebuild stdenv
+
+on:
+  workflow_call:
+    inputs:
+      stage:
+        required: true
+        type: string
+      architectures:
+        required: true
+        type: string
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  prebuild:
+    strategy:
+      fail-fast: false
+      matrix:
+        architecture: ${{ fromJson(inputs.architectures) }}
+    name: Prebuild ${{ inputs.stage }}-stdenv (${{ matrix.architecture }})
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Setup Binfmt
+        uses: docker/setup-qemu-action@v3
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            extra-platforms = ${{ matrix.architecture }}-linux
+      - name: Set Swap Space
+        uses: pierotofy/set-swap-space@master
+        with:
+          swap-size-gb: 32
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - name: Build
+        run: |
+          nix build .#packages.${{ matrix.architecture }}.${{ inputs.stage }}
