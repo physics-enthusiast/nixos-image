@@ -140,6 +140,7 @@ jobs:
         uses: pierotofy/set-swap-space@master
         with:
           swap-size-gb: 32
+      - uses: DeterminateSystems/magic-nix-cache-action@main
       - name: Build
         run: |
           cp -LR "$(nix build .#nixosConfigurations.nixos-${{ matrix.configuration }}-${{ matrix.architecture }}.config.formats.${{ matrix.type.format }} --print-out-paths)" '${{ runner.temp }}'
