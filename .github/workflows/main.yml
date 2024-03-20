@@ -61,15 +61,22 @@ jobs:
         run: |
           gh release create ${{ steps.generate_env_vars.outputs.tag_name }} --title "${{ steps.generate_env_vars.outputs.release_name }}" --generate-notes=false --draft=false --latest=false --prerelease=true
 
-  prebuilds:
+  stage1-prebuild:
     needs: release
     uses: ./.github/workflows/prebuild.yml
     with:
       stage: stage1
       architectures: ${{ needs.release.outputs.arches }}
 
+  stage2-prebuild:
+    needs: [release, stage1-prebuild]
+    uses: ./.github/workflows/prebuild.yml
+    with:
+      stage: stage2
+      architectures: ${{ needs.release.outputs.arches }}
+
   builds:
-    needs: [release, prebuilds] 
+    needs: [release, stage1-prebuild] 
     strategy:
       fail-fast: false
       matrix:
