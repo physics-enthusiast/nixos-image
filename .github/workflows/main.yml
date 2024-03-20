@@ -63,31 +63,11 @@ jobs:
 
   prebuilds:
     needs: release
-    strategy:
-      fail-fast: false
-      matrix:
-        architecture: ${{ fromJson(needs.release.outputs.arches) }}
-    name: Prebuild stdenv (${{ matrix.architecture }})
-    runs-on: ubuntu-latest
-    permissions: write-all
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-      - name: Setup Binfmt
-        uses: docker/setup-qemu-action@v3
-      - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@main
-        with:
-          extra-conf: |
-            extra-platforms = ${{ matrix.architecture }}-linux
-      - name: Set Swap Space
-        uses: pierotofy/set-swap-space@master
-        with:
-          swap-size-gb: 32
-      - uses: DeterminateSystems/magic-nix-cache-action@main
-      - name: Build
-        run: |
-          nix build .#packages.${{ matrix.architecture }}.stdenv.__bootPackages.stdenv.__bootPackages.stdenv.__bootPackages.stdenv.__bootPackages.stdenv
+    uses: ./.github/workflows/prebuild.yml
+    with:
+      stage: stage1
+      architectures: ${{ needs.release.outputs.arches }}
+
   builds:
     needs: [release, prebuilds] 
     strategy:
