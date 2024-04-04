@@ -4,7 +4,9 @@ concurrency:
   group: ${{ ( github.event_name == 'push' && 'test' ) || 'release' }}
   cancel-in-progress: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }} 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * *"  
   push:
 
 env:
