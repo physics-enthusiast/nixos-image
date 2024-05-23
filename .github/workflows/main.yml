@@ -142,7 +142,7 @@ jobs:
           swap-size-gb: 32
       - name: Build
         run: |
-          cp -LR "$(nix build .#nixosConfigurations.nixos-${{ matrix.configuration }}-${{ matrix.architecture }}.config.formats.${{ matrix.type.format }} --print-out-paths)" '${{ runner.temp }}'
+          cp -LR "$(nix build -L .#nixosConfigurations.nixos-${{ matrix.configuration }}-${{ matrix.architecture }}.config.formats.${{ matrix.type.format }} --print-out-paths)" '${{ runner.temp }}'
       - name: Upload
         run: |
           filepath=$(find -L "${{ runner.temp }}" -type f -name '*.${{ matrix.type.ext }}' | head -n 1)
