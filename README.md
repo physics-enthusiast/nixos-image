@@ -6,11 +6,19 @@ Due to the recent [xz backdoor incident](https://discourse.nixos.org/t/cve-2024-
 This repo builds NixOS disk images of various formats using Github Actions. They can be downloaded [here](https://github.com/physics-enthusiast/nixos-image/releases). The configuration built contains the respective guest agent of the cloud provider/virtual machine manager (where relevant) and cloud-init (for archives without -nocloud). If a different default configuration is desired: fork this repository, make edits to one of the flakes and wait for the workflow job to complete. Enable [read and write permissions for all scopes](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token) for automated undrafting and setting releases to latest. Without it the builds still work, the associated releases will just be marked as a draft if they ever have to be rerun.
 
 ## Release File Naming Scheme
-In order to provide a stable download URL for scripts trying to fetch the latest release, the archive containing the image file will be consistently named nixos-<format>.7z, where <format> is a subset of the strings specified by nixos-generators [here](https://github.com/nix-community/nixos-generators/tree/master?tab=readme-ov-file#supported-formats), or one of the following:
+In order to provide a stable download URL for scripts trying to fetch the latest release, the archive containing the image file will be consistently named `nixos-<format>-<configuration>.7z`, where <format> is a subset of the strings specified by nixos-generators [here](https://github.com/nix-community/nixos-generators/tree/master?tab=readme-ov-file#supported-formats), or one of the following:
 format | description
 --- | ---
 oracle | Oracle Cloud Infrastructure image
 
+Currently available configurations are:
+configuration | description
+--- | ---
+nocloud | Base configuration with openssh and systemd-networkd
+default | cloud-init enabled
+graphical | LXDE enabled and root password set to "nixos" to allow for interactive login
+
+Configuration files can be found in the `configurations` folder. `-<configuration>` in the archive name is ommited for the default configuration for download link consistency reasons (it was the first and formerly the only configuration).
 The name of the image itself is variable (partly in order to supoort VMMs that require their images to be named a [certain way](https://forum.proxmox.com/threads/error-couldnt-determine-format-and-compression-type.70084/post-324541)), but it is guaranteed to be the only file in the archive. If the image must also be of known name, the archive can be extracted to an empty directory and renamed [like so](https://stackoverflow.com/a/70166130).
 
 ## Caveats
