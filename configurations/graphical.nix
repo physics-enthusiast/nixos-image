@@ -2,13 +2,7 @@
       imports = [
         ./nocloud.nix
       ];
-      nixpkgs.overlays = [ (
-        final: prev: {
-          openbox = prev.openbox.overrideAttrs (oldAttrs: {
-            buildInputs = oldAttrs.buildInputs ++ [ pkgs.pango.dev ];
-          });
-        }
-      ) ];
+      environment.noXlibs = false;
       services.xserver = {
         enable = true;
         desktopManager = {
