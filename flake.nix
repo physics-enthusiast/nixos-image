@@ -16,6 +16,12 @@
         amazonImage.sizeMB = "auto";
       };
 
+      formatConfigs.do = {config, lib, ...}: {
+        # https://github.com/NixOS/nixpkgs/issues/308404
+        loader.grub.devices = lib.mkForce [];
+        loader.grub.device = "/dev/vda";
+      };
+
       formatConfigs.docker = {config, lib, ...}: {
         services.resolved.enable = false;
       };
