@@ -18,6 +18,7 @@
 
       formatConfigs.do = {config, lib, ...}: {
         # https://github.com/NixOS/nixpkgs/issues/308404
+        # set both, else module merge rules lead to duplicate entries in boot.loader.grub.devices
         boot.loader.grub.devices = lib.mkForce [ "/dev/vda" ];
         boot.loader.grub.device = "/dev/vda";
       };
