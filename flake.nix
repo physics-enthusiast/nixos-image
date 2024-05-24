@@ -18,7 +18,7 @@
 
       formatConfigs.do = {config, lib, ...}: {
         # https://github.com/NixOS/nixpkgs/issues/308404
-        boot.loader.grub.devices = lib.mkForce [];
+        #boot.loader.grub.devices = lib.mkForce [];
         boot.loader.grub.device = "/dev/vda";
       };
 
