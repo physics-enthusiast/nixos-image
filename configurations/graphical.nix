@@ -9,4 +9,5 @@
           lxqt.enable = true;
         };
       };
+      services.udisks2.enable = lib.mkForce false;
 }
