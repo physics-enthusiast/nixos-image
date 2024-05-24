@@ -2,6 +2,12 @@
       imports = [
         ./nocloud.nix
       ];
-      services.xserver.enable = true;
-      services.xserver.desktopManager.lxqt.enable = true;
+      services.xserver = {
+        enable = true;
+        desktopManager = {
+          xterm.enable = false;
+          xfce.enable = true;
+        };
+        displayManager.defaultSession = "xfce";
+      };
 }
