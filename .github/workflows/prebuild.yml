@@ -44,6 +44,7 @@ jobs:
           merge-multiple: true
       - name: Build
         run: |
+          ls ${{ runner.temp }}
           if [ -f '${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache' ]; then
               NIX_SUBSTITUTERS_ARGS=--option require-sigs false \
                 --option trusted-substituters 'file://${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache' \
