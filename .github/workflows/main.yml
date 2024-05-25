@@ -190,7 +190,12 @@ jobs:
           path: ${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache
       - name: Build
         run: |
-          NIX_SUBSTITUTERS_ARGS=$'--option require-sigs false --option extra-trusted-substituters \'file://${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache?priority=100\' --option extra-substituters \'file://${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache?priority=100\''
+          urlencode() { printf %s "$1" |jq -sRr '@uri'; }
+          NIX_SUBSTITUTERS_ARGS=" \
+              --option require-sigs false \
+              --option trusted-substituters file://$(urlencode '${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache')?priority=100 \
+              --option substituters file://$(urlencode '${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache')?priority=100 \
+          "
           cp -LR "$(nix build $NIX_SUBSTITUTERS_ARGS .#nixosConfigurations.nixos-${{ matrix.configuration }}-${{ matrix.architecture }}.config.formats.${{ matrix.type.format }} --print-out-paths)" '${{ runner.temp }}'
       - name: Upload
         run: |
