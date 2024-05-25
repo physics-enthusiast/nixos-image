@@ -48,8 +48,8 @@ jobs:
           if [ -d '${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache' ]; then
               NIX_SUBSTITUTERS_ARGS=" \
                   --option require-sigs false \
-                  --option trusted-substituters file://$(relimit '${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache') \
-                  --option substituters file://$(relimit '${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache') \
+                  --option extra-trusted-substituters file://$(relimit '${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache') \
+                  --option extra-substituters file://$(relimit '${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache') \
               "
           fi
           echo "$NIX_SUBSTITUTERS_ARGS"
