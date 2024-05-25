@@ -45,9 +45,9 @@ jobs:
       - name: Build
         run: |
           if [ -d '${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache' ]; then
-              NIX_SUBSTITUTERS_ARGS='--option require-sigs false \
-                --option trusted-substituters \'file://${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache\' \
-                --option substituters \'file://${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache\''
+              NIX_SUBSTITUTERS_ARGS='--option require-sigs false '\
+                '--option trusted-substituters \'file://${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache\' '\
+                '--option substituters \'file://${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache\''
           fi
           cp -LR "$(nix build $NIX_SUBSTITUTERS_ARGS .#packages.${{ matrix.architecture }}.${{ inputs.stage }} --print-out-paths)" '${{ matrix.architecture }}-prebuild-cache'
       - name: Upload Current Stage
