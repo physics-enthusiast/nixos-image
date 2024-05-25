@@ -75,8 +75,36 @@ jobs:
       stage: stage2
       architectures: ${{ needs.release.outputs.arches }}
 
+  stage3-prebuild:
+    needs: [release, stage2-prebuild]
+    uses: ./.github/workflows/prebuild.yml
+    with:
+      stage: stage3
+      architectures: ${{ needs.release.outputs.arches }}
+
+  stage4-prebuild:
+    needs: [release, stage3-prebuild]
+    uses: ./.github/workflows/prebuild.yml
+    with:
+      stage: stage4
+      architectures: ${{ needs.release.outputs.arches }}
+
+  final-prebuild:
+    needs: [release, stage4-prebuild]
+    uses: ./.github/workflows/prebuild.yml
+    with:
+      stage: final
+      architectures: ${{ needs.release.outputs.arches }}
+
+  stdenv-prebuild:
+    needs: [release, final-prebuild]
+    uses: ./.github/workflows/prebuild.yml
+    with:
+      stage: stdenv
+      architectures: ${{ needs.release.outputs.arches }}
+
   builds:
-    needs: [release, stage1-prebuild] 
+    needs: [release, stdenv-prebuild] 
     strategy:
       fail-fast: false
       matrix:
@@ -155,9 +183,15 @@ jobs:
         with:
           swap-size-gb: 32
       - uses: DeterminateSystems/magic-nix-cache-action@main
+      - name: Download Prebuilt stdenv
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.architecture }}-prebuild-cache
+          path: ${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache
       - name: Build
         run: |
-          cp -LR "$(nix build .#nixosConfigurations.nixos-${{ matrix.configuration }}-${{ matrix.architecture }}.config.formats.${{ matrix.type.format }} --print-out-paths)" '${{ runner.temp }}'
+          NIX_SUBSTITUTERS_ARGS=$'--option require-sigs false --option extra-trusted-substituters \'file://${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache?priority=100\' --option extra-substituters \'file://${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache?priority=100\''
+          cp -LR "$(nix build $NIX_SUBSTITUTERS_ARGS .#nixosConfigurations.nixos-${{ matrix.configuration }}-${{ matrix.architecture }}.config.formats.${{ matrix.type.format }} --print-out-paths)" '${{ runner.temp }}'
       - name: Upload
         run: |
           filepath=$(find -L "${{ runner.temp }}" -type f -name '*.${{ matrix.type.ext }}' | head -n 1)
