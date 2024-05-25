@@ -40,7 +40,7 @@ jobs:
         with:
           # avoids error if missing
           pattern: ${{ matrix.architecture }}-prebuild-cache
-          path: ${{ runner.temp }}
+          path: ${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache
           merge-multiple: true
       - name: Build
         run: |
