@@ -44,8 +44,13 @@ jobs:
           merge-multiple: true
       - name: Build
         run: |
+          urlencode() { printf %s "$1" |jq -sRr '@uri'; }
           if [ -d '${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache' ]; then
-              NIX_SUBSTITUTERS_ARGS=$'--option require-sigs false --option trusted-substituters \'file://${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache\' --option substituters \'file://${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache\''
+              NIX_SUBSTITUTERS_ARGS=" \
+                --option require-sigs false \
+                --option trusted-substituters file://$(urlencode '${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache') \
+                --option substituters file://$(urlencode '${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache') \
+              "
           fi
           echo "$NIX_SUBSTITUTERS_ARGS"
           cp -LR "$(nix build $NIX_SUBSTITUTERS_ARGS .#packages.${{ matrix.architecture }}.${{ inputs.stage }} --print-out-paths)" '${{ matrix.architecture }}-prebuild-cache'
