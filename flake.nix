@@ -29,7 +29,7 @@
       rootPaths = [stage]; 
     };
     in
-    mapAttrs (name: value: toCache value) stdenvs );
+    nixpkgs.lib.mapAttrs (name: value: toCache value) stdenvs );
     nixosModules.customFormats = {config, lib, ...}: {
       formatConfigs.amazon = {config, lib, ...}: {
         amazonImage.sizeMB = "auto";
