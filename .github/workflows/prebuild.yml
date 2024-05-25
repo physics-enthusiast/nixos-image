@@ -35,7 +35,24 @@ jobs:
         uses: pierotofy/set-swap-space@master
         with:
           swap-size-gb: 32
-      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - name: Download Previous Stage
+        uses: actions/download-artifact@v4
+        with:
+          # avoids error if missing
+          pattern: ${{ matrix.architecture }}-prebuild-cache
+          path: ${{ runner.temp }}
+          merge-multiple: true
       - name: Build
         run: |
-          nix build .#packages.${{ matrix.architecture }}.${{ inputs.stage }}
+          if [ -f '${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache' ]; then
+              NIX_SUBSTITUTERS_ARGS=--option require-sigs false \
+                --option trusted-substituters 'file://${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache' \
+                --option substituters 'file://${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache'
+          fi
+          cp -LR "$(nix build $NIX_SUBSTITUTERS_ARGS .#packages.${{ matrix.architecture }}.${{ inputs.stage }} --print-out-paths)" '${{ matrix.architecture }}-prebuild-cache'
+      - name: Upload Current Stage
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.architecture }}-prebuild-cache
+          path: ./${{ matrix.architecture }}-prebuild-cache
+          overwrite: true
