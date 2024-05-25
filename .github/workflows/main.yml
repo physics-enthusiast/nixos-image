@@ -178,6 +178,7 @@ jobs:
         with:
           extra-conf: |
             extra-platforms = ${{ matrix.architecture }}-linux
+            require-sigs = false
       - name: Set Swap Space
         uses: pierotofy/set-swap-space@master
         with:
@@ -192,7 +193,6 @@ jobs:
         run: |
           relimit() { printf %s "$1" |sed 's/ /%20/g'; }
           NIX_SUBSTITUTERS_ARGS=" \
-              --option require-sigs false \
               --option extra-trusted-substituters file://$(relimit '${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache')?priority=100 \
               --option extra-substituters file://$(relimit '${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache')?priority=100 \
           "
