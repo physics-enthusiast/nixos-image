@@ -44,7 +44,7 @@ jobs:
           merge-multiple: true
       - name: Build
         run: |
-          urlencode() { printf %s "$1" |jq -sRr '@uri'; }
+          urlencode() { printf %s "$1" |sed 's/ /%20/g'; }
           if [ -d '${{ runner.temp }}/${{ matrix.architecture }}-prebuild-cache' ]; then
               NIX_SUBSTITUTERS_ARGS=" \
                   --option require-sigs false \
