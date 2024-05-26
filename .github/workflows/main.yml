@@ -179,6 +179,8 @@ jobs:
           extra-conf: |
             extra-platforms = ${{ matrix.architecture }}-linux
             require-sigs = false
+            cores = 2
+            max-jobs = auto
       - name: Set Swap Space
         uses: pierotofy/set-swap-space@master
         with:
