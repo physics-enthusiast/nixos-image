@@ -15,6 +15,7 @@
     packages = nixpkgs.lib.genAttrs architectures (architecture:
     let
       pkgs = import nixpkgs { system = "${architecture}-linux"; };
+      pkgsNative = import nixpkgs { system = "x86_64-linux"; };
     in
     let
     stdenvs = rec {
@@ -25,7 +26,7 @@
       stage2 = stage3.__bootPackages.stdenv;
       stage1 = stage2.__bootPackages.stdenv;
     };
-    toCache = stage: pkgs.mkBinaryCache { 
+    toCache = stage: pkgsNative.mkBinaryCache { 
       rootPaths = [stage]; 
     };
     in
