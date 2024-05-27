@@ -27,7 +27,7 @@
       stage1 = stage2.__bootPackages.stdenv;
     };
     toCache = stage: pkgsNative.mkBinaryCache { 
-      rootPaths = [stage.cc.drvPath]; 
+      rootPaths = [stage.bintools.drvPath]; 
     };
     in
     nixpkgs.lib.mapAttrs (name: value: toCache value) stdenvs );
