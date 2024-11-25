@@ -127,11 +127,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
-      - name: Free Disk Space (Ubuntu)
+      - name: Free Disk Space
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: false
           swap-storage: false
+      - name: Create Build Directory
+        run: mkdir -p /nix_build_dir
       - name: Checkout repo
         uses: actions/checkout@v4
       - name: Setup Binfmt
@@ -140,6 +142,7 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@main
         with:
           extra-conf: |
+            sandbox-build-dir = /nix_build_dir
             extra-platforms = ${{ matrix.architecture }}-linux
       - name: Set Swap Space
         uses: pierotofy/set-swap-space@master
@@ -147,7 +150,6 @@ jobs:
           swap-size-gb: 32
       - name: Build
         run: |
-          df -h
           cp -LR "$(nix build .#nixosConfigurations.nixos-${{ matrix.configuration }}-${{ matrix.architecture }}.config.formats.${{ matrix.type.format }} --print-out-paths)" '${{ runner.temp }}'
       - name: Upload
         run: |
