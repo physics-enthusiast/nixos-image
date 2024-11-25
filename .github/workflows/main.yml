@@ -133,7 +133,7 @@ jobs:
           tool-cache: false
           swap-storage: false
       - name: Create Build Directory
-        run: mkdir -p /nix_build_dir
+        run: sudo mkdir -p /nix_build_dir
       - name: Checkout repo
         uses: actions/checkout@v4
       - name: Setup Binfmt
