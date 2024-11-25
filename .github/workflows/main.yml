@@ -127,6 +127,11 @@ jobs:
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: false
+          swap-storage: false
       - name: Checkout repo
         uses: actions/checkout@v4
       - name: Setup Binfmt
@@ -142,6 +147,7 @@ jobs:
           swap-size-gb: 32
       - name: Build
         run: |
+          df -h
           cp -LR "$(nix build .#nixosConfigurations.nixos-${{ matrix.configuration }}-${{ matrix.architecture }}.config.formats.${{ matrix.type.format }} --print-out-paths)" '${{ runner.temp }}'
       - name: Upload
         run: |
