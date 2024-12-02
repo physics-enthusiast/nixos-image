@@ -27,6 +27,10 @@
         services.resolved.enable = false;
       };
 
+      formatConfigs.hyperv = {config, lib, ...}: {
+        virtualisation.diskSize = "auto";
+      };
+
       formatConfigs.oracle = {config, modulesPath, ...}: {
         imports = [
           "${toString modulesPath}/virtualisation/oci-image.nix"
@@ -43,7 +47,6 @@
     nixosConfigurations = builtins.listToAttrs (nixpkgs.lib.lists.forEach (nixpkgs.lib.attrsets.cartesianProductOfSets { architecture = architectures; configuration = configurations; }) (systemInfo: nixpkgs.lib.attrsets.nameValuePair "nixos-${systemInfo.configuration}-${systemInfo.architecture}" (nixpkgs.lib.nixosSystem {
       system = "${systemInfo.architecture}-linux";
       modules = [
-        { virtualisation.diskSize = "auto"; }
         nixos-generators.nixosModules.all-formats
         self.nixosModules.customFormats
         (nixpkgs.lib.path.append ./configurations "${systemInfo.configuration}.nix")
