@@ -42,7 +42,11 @@
       formatConfigs.qcow = {config, lib, ...}: {
         services.qemuGuest.enable = true;
       };
-    }; 
+
+      formatConfigs.vagrant = {config, lib, ...}: {
+        image.extension = "box";
+      };
+    };
     nixosConfigurations = builtins.listToAttrs (nixpkgs.lib.lists.forEach (nixpkgs.lib.attrsets.cartesianProductOfSets { architecture = architectures; configuration = configurations; }) (systemInfo: nixpkgs.lib.attrsets.nameValuePair "nixos-${systemInfo.configuration}-${systemInfo.architecture}" (nixpkgs.lib.nixosSystem {
       system = "${systemInfo.architecture}-linux";
       modules = [
