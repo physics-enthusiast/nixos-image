@@ -153,6 +153,7 @@ jobs:
           cp -LR "$(nix build .#nixosConfigurations.nixos-${{ matrix.configuration }}-${{ matrix.architecture }}.config.formats.${{ matrix.type.format }} --print-out-paths)" '${{ runner.temp }}'
       - name: Upload
         run: |
+          ls -R "${{ runner.temp }}"
           filepath=$(find -L "${{ runner.temp }}" -type f -name '*.${{ matrix.type.ext }}' | head -n 1)
           chmod 755 "$filepath" 
           newpath="nixos-${{ matrix.type.format }}${{ ( matrix.configuration != 'default' && format('-{0}', matrix.configuration) ) || '' }}${{ ( matrix.architecture != 'x86_64' && format('-{0}', matrix.architecture) ) || '' }}.7z"
