@@ -1,10 +1,9 @@
 {
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-unstable";
     nixos-generators = {
       url = "github:nix-community/nixos-generators";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
+    inputs.nixpkgs.follows = "nixos-generators/nixpkgs";
   };
   outputs = { self, nixpkgs, nixos-generators, ... }: let
   architectures = builtins.fromJSON (builtins.readFile ./architectures.json);
