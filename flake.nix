@@ -43,7 +43,7 @@
         services.qemuGuest.enable = true;
       };
 
-      formatConfigs.vagrant-virtualbox = {config, lib, ...}:
+      formatConfigs.vagrant-virtualbox = {config, lib, ...}: {
         image.extension = lib.mkOverride 99 "box";
       };
     };
