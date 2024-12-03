@@ -44,7 +44,7 @@
       };
 
       formatConfigs.vagrant-virtualbox = {config, lib, ...}: {
-        image.extension = lib.mkOverride 99 "${config.image.baseName}.box";
+        image.extension = lib.mkOverride 99 "box";
         system.build.image = lib.mkOverride 99 config.system.build.vagrantVirtualbox;
       };
     };
