@@ -44,7 +44,8 @@
       };
 
       formatConfigs.vagrant = {config, lib, ...}: {
-        image.extension = lib.mkOverride 99 ".box";
+        image.baseName = lib.mkForce "test";
+        image.extension = lib.mkForce "box";
       };
     };
     nixosConfigurations = builtins.listToAttrs (nixpkgs.lib.lists.forEach (nixpkgs.lib.attrsets.cartesianProductOfSets { architecture = architectures; configuration = configurations; }) (systemInfo: nixpkgs.lib.attrsets.nameValuePair "nixos-${systemInfo.configuration}-${systemInfo.architecture}" (nixpkgs.lib.nixosSystem {
