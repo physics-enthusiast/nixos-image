@@ -1,10 +1,10 @@
 {
   inputs = {
+    nixpkgs.url = "nixpkgs/nixos-unstable";
     nixos-generators = {
       url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixpkgs.url = "github:physics-enthusiast/nixpkgs/vagrant-image-fix";
-    #nixpkgs.follows = "nixos-generators/nixpkgs";
   };
   outputs = { self, nixpkgs, nixos-generators, ... }: let
   architectures = builtins.fromJSON (builtins.readFile ./architectures.json);
@@ -27,8 +27,8 @@
         services.resolved.enable = false;
       };
 
-      formatConfigs.hyperv = {config, lib, ...}: {
-        virtualisation.diskSize = "auto";
+      formatConfigs.gce = {config, lib, ...}: {
+        virtualisation.googleComputeImage.compressionLevel = 9;
       };
 
       formatConfigs.oracle = {config, modulesPath, ...}: {
@@ -43,7 +43,7 @@
       formatConfigs.qcow = {config, lib, ...}: {
         services.qemuGuest.enable = true;
       };
-    };
+    }; 
     nixosConfigurations = builtins.listToAttrs (nixpkgs.lib.lists.forEach (nixpkgs.lib.attrsets.cartesianProductOfSets { architecture = architectures; configuration = configurations; }) (systemInfo: nixpkgs.lib.attrsets.nameValuePair "nixos-${systemInfo.configuration}-${systemInfo.architecture}" (nixpkgs.lib.nixosSystem {
       system = "${systemInfo.architecture}-linux";
       modules = [
