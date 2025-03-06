@@ -43,11 +43,6 @@
       formatConfigs.qcow = {config, lib, ...}: {
         services.qemuGuest.enable = true;
       };
-
-      formatConfigs.vagrant-virtualbox = {config, lib, ...}: {
-        image.extension = lib.mkOverride 99 "box";
-        system.build.image = lib.mkForce config.system.build.vagrantVirtualbox;
-      };
     };
     nixosConfigurations = builtins.listToAttrs (nixpkgs.lib.lists.forEach (nixpkgs.lib.attrsets.cartesianProductOfSets { architecture = architectures; configuration = configurations; }) (systemInfo: nixpkgs.lib.attrsets.nameValuePair "nixos-${systemInfo.configuration}-${systemInfo.architecture}" (nixpkgs.lib.nixosSystem {
       system = "${systemInfo.architecture}-linux";
