@@ -5,9 +5,11 @@
       services.xserver = {
         enable = true;
         desktopManager = {
-          lxqt.enable = true;
+          xterm.enable = false;
+          xfce.enable = true;
         };
       };
+      services.displayManager.defaultSession = "xfce";
       services.udisks2.enable = lib.mkForce false;
       users.users.root.password = "nixos";
 }
