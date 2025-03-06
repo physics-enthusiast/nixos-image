@@ -156,7 +156,7 @@ jobs:
           filepath=$(find -L "${{ runner.temp }}" -type f -name '*.${{ matrix.type.ext }}' | head -n 1)
           chmod 755 "$filepath" 
           newpath="nixos-${{ matrix.type.format }}${{ ( matrix.configuration != 'default' && format('-{0}', matrix.configuration) ) || '' }}${{ ( matrix.architecture != 'x86_64' && format('-{0}', matrix.architecture) ) || '' }}.7z"
-          7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=256m -ms=on "$newpath" "$filepath" 
+          7z a -t7z -m0=lzma -mx=9 -mfb=128 -md=1536m -ms=on "$newpath" "$filepath" 
           chmod 755 "$newpath"
           gh release upload ${{ needs.release.outputs.tag_name }} "$newpath" --repo ${{ github.repository }}
           
