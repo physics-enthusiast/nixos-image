@@ -3,7 +3,8 @@
     nixos-generators = {
       url = "github:nix-community/nixos-generators";
     };
-    nixpkgs.follows = "nixos-generators/nixpkgs";
+    nixpkgs.url = "github:physics-enthusiast/nixpkgs/vagrant-image-fix";
+    #nixpkgs.follows = "nixos-generators/nixpkgs";
   };
   outputs = { self, nixpkgs, nixos-generators, ... }: let
   architectures = builtins.fromJSON (builtins.readFile ./architectures.json);
