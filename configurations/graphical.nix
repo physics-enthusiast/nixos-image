@@ -6,7 +6,10 @@
       services.xserver = {
         enable = true;
         windowManager.openbox.enable = true;
-        displayManager.sddm.enable = true;
+        displayManager.lightdm = {
+          enable = true;
+          greeters.gtk.enable = true;
+        };
       };
       services.picom.enable = true;
 
@@ -30,5 +33,6 @@
       programs.thunar.enable = true;
       programs.nm-applet.enable = true;
 
+      users.users.nixos.password = "nixos";
       users.users.root.password = "nixos";
 }
