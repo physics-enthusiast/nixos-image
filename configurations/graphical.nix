@@ -2,14 +2,33 @@
       imports = [
         ./nocloud.nix
       ];
+
       services.xserver = {
         enable = true;
-        desktopManager = {
-          xterm.enable = false;
-          xfce.enable = true;
+        windowManager.openbox.enable = true;
+        displayManager.sddm.enable = true;
+      };
+      services.picom.enable = true;
+
+      environment = {
+        systemPackages = with pkgs; [
+          tint2
+          xterm
+          feh
+          volumeicon
+        ];
+        etc = {
+          "xdg/openbox/autostart" = {
+            text = ''
+              tint2 &
+              volumeicon &
+            '';
+          };
         };
       };
-      services.displayManager.defaultSession = "xfce";
-      services.udisks2.enable = lib.mkForce false;
+
+      programs.thunar.enable = true;
+      programs.nm-applet.enable = true;
+
       users.users.root.password = "nixos";
 }
