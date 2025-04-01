@@ -4,12 +4,15 @@
       ];
 
       services = {
-        displayManager.sddm = {
-          enable = true;
-          wayland = {
+        displayManager = {
+          sddm = {
             enable = true;
-            compositor = "weston";
+            wayland = {
+              enable = true;
+              compositor = "weston";
+            };
           };
+          sessionPackages = pkgs.weston;
         };
       };
 
