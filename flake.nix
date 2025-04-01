@@ -52,7 +52,6 @@
       system = "${systemInfo.architecture}-linux";
       modules = [
         (nixpkgs.outPath + "/nixos/modules/profiles/minimal.nix")
-        (nixpkgs.outPath + "/nixos/modules/profiles/perlless.nix")
         nixos-generators.nixosModules.all-formats
         self.nixosModules.customFormats
         (nixpkgs.lib.path.append ./configurations "${systemInfo.configuration}.nix")
