@@ -4,6 +4,11 @@
 
       nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+      imports = [
+        "${modulesPath}/profiles/minimal.nix"
+      ];
+      hardware.enableRedistributableFirmware = false;
+
       networking = {
         hostName = "nixos";
       };
