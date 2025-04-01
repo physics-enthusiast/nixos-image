@@ -12,7 +12,6 @@
           };
         };
       };
-      services.picom.enable = true;
 
       users.users.nixos.password = "nixos";
       users.users.root.password = "nixos";
