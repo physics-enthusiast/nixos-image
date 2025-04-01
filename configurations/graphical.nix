@@ -12,7 +12,7 @@
               compositor = "weston";
             };
           };
-          sessionPackages = pkgs.weston;
+          sessionPackages = [ pkgs.weston ];
         };
       };
 
