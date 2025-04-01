@@ -3,35 +3,16 @@
         ./nocloud.nix
       ];
 
-      services.xserver = {
-        enable = true;
-        windowManager.openbox.enable = true;
-        displayManager.lightdm = {
+      services = {
+        displayManager.sddm = {
           enable = true;
-          greeters.gtk.enable = true;
-        };
-      };
-      services.picom.enable = true;
-
-      environment = {
-        systemPackages = with pkgs; [
-          tint2
-          xterm
-          feh
-          volumeicon
-        ];
-        etc = {
-          "xdg/openbox/autostart" = {
-            text = ''
-              tint2 &
-              volumeicon &
-            '';
+          wayland = {
+            enable = true;
+            compositor = "kwin";
           };
         };
       };
-
-      programs.thunar.enable = true;
-      programs.nm-applet.enable = true;
+      services.picom.enable = true;
 
       users.users.nixos.password = "nixos";
       users.users.root.password = "nixos";
