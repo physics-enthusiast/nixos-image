@@ -51,6 +51,7 @@
     nixosConfigurations = builtins.listToAttrs (nixpkgs.lib.lists.forEach (nixpkgs.lib.attrsets.cartesianProductOfSets { architecture = architectures; configuration = configurations; }) (systemInfo: nixpkgs.lib.attrsets.nameValuePair "nixos-${systemInfo.configuration}-${systemInfo.architecture}" (nixpkgs.lib.nixosSystem {
       system = "${systemInfo.architecture}-linux";
       modules = [
+        (nixpkgs.outPath + "/nixos/modules/profiles/minimal.nix")
         nixos-generators.nixosModules.all-formats
         self.nixosModules.customFormats
         (nixpkgs.lib.path.append ./configurations "${systemInfo.configuration}.nix")
