@@ -2,8 +2,6 @@
       imports = [
         ./nocloud.nix
       ];
-      # the container configurations default this to true
-      environment.noXlibs = false;
       services.xserver = {
         enable = true;
         desktopManager = {
