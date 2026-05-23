@@ -76,13 +76,10 @@ jobs:
             format: azure
             ext: vhd
           - name: Digital Ocean
-            format: do
+            format: digital-ocean
             ext: qcow2.gz
-          - name: Docker
-            format: docker
-            ext: tar.xz
           - name: GCE
-            format: gce
+            format: google-compute
             ext: raw.tar.gz
           - name: HyperV
             format: hyperv
@@ -97,7 +94,7 @@ jobs:
             format: linode
             ext: img.gz
           - name: Oracle Cloud
-            format: oracle
+            format: oci
             ext: qcow2
           - name: Proxmox
             format: proxmox
@@ -106,7 +103,7 @@ jobs:
             format: proxmox-lxc
             ext: tar.xz
           - name: QEMU
-            format: qcow
+            format: qemu
             ext: qcow2
           - name: Raw BIOS Bootable
             format: raw
@@ -142,7 +139,7 @@ jobs:
           swap-size-gb: 32
       - name: Build
         run: |
-          cp -LR "$(nix build .#nixosConfigurations.nixos-${{ matrix.configuration }}-${{ matrix.architecture }}.config.formats.${{ matrix.type.format }} --print-out-paths)" '${{ runner.temp }}'
+          cp -LR "$(nix build .#nixosConfigurations.nixos-${{ matrix.configuration }}-${{ matrix.architecture }}.config.system.build.images.${{ matrix.type.format }} --print-out-paths)" '${{ runner.temp }}'
       - name: Upload
         run: |
           filepath=$(find -L "${{ runner.temp }}" -type f -name '*.${{ matrix.type.ext }}' | head -n 1)
