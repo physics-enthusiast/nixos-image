@@ -7,24 +7,11 @@
   configurations = builtins.map (filename: builtins.replaceStrings [".nix"] [""] filename) (builtins.attrNames (builtins.readDir ./configurations));
   in
   {
-    nixosModules.formatFixes = {config, lib, modulesPath, ...}: {
+    nixosModules.formatFixes = {config, lib, ...}: {
       image.modules =
-        docker = {
-          services.resolved.enable = false;
+        qemu = {
+          services.qemuGuest.enable = true;
         };
-
-        oracle = {
-          imports = [
-            "${toString modulesPath}/virtualisation/oci-image.nix"
-          ];
-
-        formatAttr = "OCIImage";
-        fileExtension = ".qcow2";
-      };
-	  
-      formatConfigs.qcow = {config, lib, ...}: {
-        services.qemuGuest.enable = true;
-      };
     }; 
     nixosConfigurations = builtins.listToAttrs (nixpkgs.lib.lists.forEach (nixpkgs.lib.attrsets.cartesianProduct { architecture = architectures; configuration = configurations; }) (systemInfo: nixpkgs.lib.attrsets.nameValuePair "nixos-${systemInfo.configuration}-${systemInfo.architecture}" (nixpkgs.lib.nixosSystem {
       system = "${systemInfo.architecture}-linux";
@@ -33,6 +20,5 @@
         (nixpkgs.lib.path.append ./configurations "${systemInfo.configuration}.nix")
       ];
     })));
-	
   };
 }
