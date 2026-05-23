@@ -8,10 +8,11 @@
   in
   {
     nixosModules.formatFixes = {config, lib, ...}: {
-      image.modules =
+      image.modules = {
         qemu = {
           services.qemuGuest.enable = true;
         };
+      };
     }; 
     nixosConfigurations = builtins.listToAttrs (nixpkgs.lib.lists.forEach (nixpkgs.lib.attrsets.cartesianProduct { architecture = architectures; configuration = configurations; }) (systemInfo: nixpkgs.lib.attrsets.nameValuePair "nixos-${systemInfo.configuration}-${systemInfo.architecture}" (nixpkgs.lib.nixosSystem {
       system = "${systemInfo.architecture}-linux";
